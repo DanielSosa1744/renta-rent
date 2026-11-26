@@ -951,31 +951,18 @@
       from { width: 0%; }
       to { width: 100%; }
     }
-    @keyframes circleFill {
-      0% { transform: translateY(100%); }
-      100% { transform: translateY(0%); }
+    @keyframes ringGrow {
+      from { stroke-dashoffset: var(--circ, 250); }
+      to { stroke-dashoffset: 0; }
     }
-    .intro-circles {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .intro-circle {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid rgba(246, 250, 253, 0.28);
-      position: relative;
-      overflow: hidden;
-      background: rgba(10, 25, 49, 0.5);
-    }
-    .intro-circle-fill {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      animation: circleFill var(--dur, 1.4s) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    .intro-ring {
+      fill: none;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      stroke-dasharray: var(--circ, 250);
+      stroke-dashoffset: var(--circ, 250);
+      animation: ringGrow var(--dur, 3s) cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
     }
   </style>
 </head>
@@ -983,17 +970,20 @@
   <!-- INTRO / SPLASH SCREEN -->
   <div id="app-intro-overlay" onclick="cerrarIntro()" style="position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at center, #1A3D63 0%, #0A1931 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.45s ease;cursor:pointer;">
     <div style="text-align:center;animation:introFadeIn 0.55s ease forwards;">
-      <div class="intro-circles">
-        <div class="intro-circle"><div class="intro-circle-fill" style="background:#B3CFE5; --dur:0.9s;"></div></div>
-        <div class="intro-circle"><div class="intro-circle-fill" style="background:#4A7FA7; --dur:1.35s;"></div></div>
-        <div class="intro-circle"><div class="intro-circle-fill" style="background:#50A88E; --dur:1.1s;"></div></div>
-        <div class="intro-circle"><div class="intro-circle-fill" style="background:#10b981; --dur:1.6s;"></div></div>
-        <div class="intro-circle"><div class="intro-circle-fill" style="background:#FFC64F; --dur:1.25s;"></div></div>
-      </div>
+      <svg width="112" height="112" viewBox="0 0 112 112" style="margin-bottom: 16px;">
+        <circle cx="56" cy="56" r="48" fill="none" stroke="rgba(179,207,229,0.12)" stroke-width="5" />
+        <circle cx="56" cy="56" r="38" fill="none" stroke="rgba(179,207,229,0.12)" stroke-width="5" />
+        <circle cx="56" cy="56" r="28" fill="none" stroke="rgba(179,207,229,0.12)" stroke-width="5" />
+        <circle cx="56" cy="56" r="18" fill="none" stroke="rgba(179,207,229,0.12)" stroke-width="5" />
+        <circle class="intro-ring" cx="56" cy="56" r="48" stroke="#4A7FA7" stroke-width="5" style="--circ:302; --dur:3.4s;" />
+        <circle class="intro-ring" cx="56" cy="56" r="38" stroke="#50A88E" stroke-width="5" style="--circ:239; --dur:2.8s;" />
+        <circle class="intro-ring" cx="56" cy="56" r="28" stroke="#B3CFE5" stroke-width="5" style="--circ:176; --dur:2.3s;" />
+        <circle class="intro-ring" cx="56" cy="56" r="18" stroke="#FFC64F" stroke-width="5" style="--circ:113; --dur:1.9s;" />
+      </svg>
       <div style="font-size:1.75rem;font-weight:900;letter-spacing:-0.03em;color:#F6FAFD;">RentaRent</div>
       <div style="font-size:0.88rem;color:#B3CFE5;margin-top:4px;font-weight:500;">Gestión de Alquileres Temporarios</div>
       <div style="width:140px;height:4px;background:rgba(179,207,229,0.18);border-radius:999px;margin:20px auto 0;overflow:hidden;">
-        <div style="height:100%;background:linear-gradient(90deg,#10b981,#4A7FA7);border-radius:999px;animation:introProgress 1.6s ease forwards;"></div>
+        <div style="height:100%;background:linear-gradient(90deg,#10b981,#4A7FA7);border-radius:999px;animation:introProgress 3.5s ease forwards;"></div>
       </div>
     </div>
   </div>
@@ -1005,7 +995,7 @@
       el.style.opacity = '0';
       setTimeout(() => el.remove(), 450);
     }
-    setTimeout(cerrarIntro, 1750);
+    setTimeout(cerrarIntro, 3700);
   </script>
 
   <!-- APP HEADER -->
