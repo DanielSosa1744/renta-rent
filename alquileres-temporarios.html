@@ -1255,8 +1255,9 @@
         <button class="btn btn-primary btn-sm" id="prop-det-nueva-res">+ Nueva Reserva</button>
       </div>
       <div id="prop-det-reservas" class="item-list" style="max-height: 220px; overflow-y: auto;"></div>
-      <div class="modal-footer-back">
+      <div class="modal-footer-back" style="justify-content: space-between;">
         <button type="button" class="modal-back-btn" onclick="cerrarModal('modal-prop-detalle')">&larr; Atrás</button>
+        <button type="button" class="btn btn-danger btn-sm" id="prop-det-eliminar">Eliminar Alojamiento</button>
       </div>
     </div>
   </div>
@@ -1697,6 +1698,14 @@
         const sel = document.getElementById('res-propiedad');
         if (sel) sel.value = propId;
       };
+
+      const btnDel = document.getElementById('prop-det-eliminar');
+      if (btnDel) {
+        btnDel.onclick = () => {
+          cerrarModal('modal-prop-detalle');
+          eliminarPropiedad(propId);
+        };
+      }
 
       renderCalendarioPropiedad();
       renderReservasPropiedad();
