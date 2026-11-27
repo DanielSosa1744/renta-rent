@@ -809,30 +809,30 @@
 
     /* ---- DOCK CENTRADO CON BOTON + ---- */
     .nav-add-btn {
-      width: 60px;
-      height: 60px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, #047857, #065f46);
       color: #ffffff;
-      border: 3px solid #0A1931;
-      font-size: 2.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      font-size: 2rem;
       font-weight: 900;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      margin-top: -28px;
-      box-shadow: 0 10px 26px rgba(4, 120, 87, 0.55), 0 0 0 4px rgba(4, 120, 87, 0.22);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin: 0 4px;
+      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.45);
+      transition: transform 0.2s ease;
       flex-shrink: 0;
     }
 
     body.light-mode .nav-add-btn {
       background: linear-gradient(135deg, #047857, #065f46);
       color: #ffffff;
-      border-color: #f7f3e8;
-      box-shadow: 0 10px 26px rgba(4, 120, 87, 0.45), 0 0 0 4px rgba(4, 120, 87, 0.16);
+      border-color: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.35);
     }
 
     .nav-add-btn:hover {
@@ -1175,7 +1175,7 @@
   <header class="app-header">
     <div class="brand">
       <img class="brand-logo-img" src="rentarent_logo.jpg" width="38" height="38" alt="RentaRent Logo" />
-      <div class="brand-title">RentaRent <span id="app-version" style="font-size:0.68rem;font-weight:600;opacity:0.75;margin-left:4px;">v1.10</span></div>
+      <div class="brand-title">RentaRent <span id="app-version" style="font-size:0.68rem;font-weight:600;opacity:0.75;margin-left:4px;">v1.11</span></div>
       <button id="install-pwa-btn" class="btn btn-primary btn-sm" style="display:none; margin-left:auto; margin-right:0.4rem; padding:0.35rem 0.65rem; font-size:0.75rem;" onclick="instalarPWA()">Instalar App</button>
       <button id="theme-toggle-btn" class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Alternar modo claro/oscuro" style="margin-left:auto; padding:0.4rem 0.65rem; font-size:1rem;">☀️</button>
     </div>
