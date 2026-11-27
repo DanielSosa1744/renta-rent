@@ -1,0 +1,155 @@
+﻿/* ---- CALENDARIO MENSUAL EN MODAL ---- */
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .cal-month-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      color: var(--text-main);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.5);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      border: none;
+    }
+
+    .cal-day.today {
+      border-color: var(--accent-primary);
+      box-shadow: inset 0 0 0 1px var(--accent-primary);
+    }
+
+    .cal-day.booked-airbnb, .cal-day.booked-booking, .cal-day.booked-directo { box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.35); border-color: rgba(16, 185, 129, 0.6) !important; } .cal-day.booked-airbnb {
+      background: rgba(255, 90, 95, 0.28);
+      border-color: rgba(255, 90, 95, 0.6);
+      color: #fecaca;
+    }
+
+    .cal-day.booked-booking {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: rgba(59, 130, 246, 0.65);
+      color: #bfdbfe;
+    }
+
+    .cal-day.booked-directo {
+      background: rgba(139, 92, 246, 0.3);
+      border-color: rgba(139, 92, 246, 0.65);
+      color: #ddd6fe;
+    }
+
+    .cal-day.checkin {
+      background: rgba(16, 185, 129, 0.55) !important;
+      border-color: #10b981 !important;
+      color: #fff !important;
+      font-weight: 800;
+    }
+
+    .cal-day.checkout {
+      background: rgba(239, 68, 68, 0.55) !important;
+      border-color: #ef4444 !important;
+      color: #fff !important;
+      font-weight: 800;
+    }
+
+    .cal-day.checkin-checkout {
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.65) 50%, rgba(16, 185, 129, 0.65) 50%) !important;
+      border-color: rgba(255, 255, 255, 0.45) !important;
+      color: #fff !important;
+      font-weight: 800;
+    }
+
+    .cal-day.dimmed {
+      opacity: 0.25;
+      filter: grayscale(60%);
+    }
+
+    .cal-day.past {
+      opacity: 0.32;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .cal-day.highlighted-booking {
+      box-shadow: 0 0 0 2px #FFC64F !important;
+      transform: scale(1.06);
+      z-index: 2;
+      opacity: 1 !important;
+      filter: none !important;
+    }
+
+    .cal-day.in-range {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .cal-day.clickable {
+      cursor: pointer;
+    }
+
+    .cal-day.clickable:hover {
+      transform: scale(1.06);
+      border-color: var(--accent-primary);
+    }
+
+    .modal-footer-back {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .modal-back-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .modal-back-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+

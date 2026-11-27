@@ -1,0 +1,68 @@
+﻿/* ---- BANNER / PROMO ---- */
+    .promo-banner {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .promo-text {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.75rem;
+      opacity: 0.4;
+    }
+
+    /* Floating Action Button */
+    
+
+    .period-selector {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .period-btn {
+      flex: 1;
+      padding: 0.45rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .period-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 220px;
+      width: 100%;
+    }
+

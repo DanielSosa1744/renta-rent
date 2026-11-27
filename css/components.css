@@ -1,0 +1,276 @@
+﻿/* ---- CARDS ---- */
+    .card {
+      background: rgba(26, 61, 99, 0.92);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+      contain: layout style paint;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+/* ---- BUTTONS ---- */
+    .btn {
+      padding: 0.65rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.78rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* ---- LIST ITEMS ---- */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .list-card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.2s;
+    }
+
+    .list-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .list-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .list-card-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .list-card-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .channel-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .channel-airbnb { background: rgba(255, 90, 95, 0.2); color: #ff5a5f; border: 1px solid rgba(255, 90, 95, 0.3); }
+    .channel-booking { background: rgba(0, 53, 128, 0.3); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+    .channel-directo { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .channel-otro { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+    /* ---- RENTABILIDAD CARD ---- */
+    .profit-breakdown {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      margin-top: 0.4rem;
+      border-left: 3px solid var(--accent-primary);
+    }
+
+    .profit-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+
+    .profit-row.net {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    /* ---- FORMS ---- */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-primary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+/* ---- MODAL ---- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg-card-solid);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0.2rem;
+    }
+
+.segmented-toggle {
+      display: flex;
+      background: rgba(10, 25, 49, 0.55);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    body.light-mode .segmented-toggle {
+      background: rgba(81, 156, 171, 0.16);
+    }
+
+    .segmented-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .segmented-btn.active {
+      background: var(--bg-card-solid);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+

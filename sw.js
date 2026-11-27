@@ -1,9 +1,38 @@
+const CACHE_NAME = 'rentarent-v1.12';
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.jpg',
+  '/rentarent_logo.jpg',
+  '/css/core.css',
+  '/css/layout.css',
+  '/css/components.css',
+  '/css/dashboard.css',
+  '/css/reservas.css',
+  '/css/reportes.css',
+  '/js/core.js',
+  '/js/storage.js',
+  '/js/ui.js',
+  '/js/calendario.js',
+  '/js/giftcards.js',
+  '/js/dashboard.js',
+  '/js/reservas.js',
+  '/js/gastos.js',
+  '/js/reportes.js',
+  '/js/licencia.js'
+];
+
 self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).catch(() => {}));
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(self.clients.claim());
+  e.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
