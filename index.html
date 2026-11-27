@@ -7,12 +7,34 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="RentaRent" />
   <link rel="apple-touch-icon" href="icon-192.jpg" />
+  <link rel="preload" as="image" href="rentarent_logo.jpg" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0A1931" />
   <title>RentaRent - Gestión de Alquileres Temporarios</title>
+  <script>
+    // Aplicar estado inicial antes del primer pintado para evitar FOUC y repaints
+    (function() {
+      var d = document.documentElement;
+      d.classList.add('intro-active');
+      if (localStorage.getItem('rentarent_theme_v1') === 'light') {
+        d.classList.add('light-mode');
+      }
+    })();
+  </script>
   <!-- Chart.js CDN con fallback -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <style>
+    html {
+      background-color: #0A1931;
+    }
+    html.light-mode {
+      background-color: #f7f3e8;
+    }
+    html.intro-active .app-header,
+    html.intro-active .container,
+    html.intro-active .bottom-nav {
+      visibility: hidden;
+    }
     :root {
       --bg-dark: #0A1931;
       --bg-card: rgba(26, 61, 99, 0.78);
@@ -970,13 +992,37 @@
       from { transform: scaleX(0); }
       to { transform: scaleX(1); }
     }
+    #app-intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      background: radial-gradient(circle at center, #1A3D63 0%, #0A1931 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease;
+      will-change: opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      contain: layout style paint;
+      cursor: pointer;
+    }
+    .intro-inner {
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .intro-ready .intro-inner {
+      opacity: 1;
+    }
     @keyframes houseDraw {
       from { stroke-dashoffset: 100; }
       to { stroke-dashoffset: 0; }
     }
     @keyframes roomFillUp {
-      from { transform: scaleY(0); opacity: 0.2; }
-      to { transform: scaleY(1); opacity: var(--fill-op, 0.72); }
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
     }
     .house-stroke {
       fill: none;
@@ -987,16 +1033,14 @@
     }
     .house-room {
       stroke: none;
-      opacity: 0;
-      transform-box: fill-box;
-      transform-origin: bottom center;
+      transform-origin: 0 100px;
       transform: scaleY(0);
     }
     .intro-ready .house-stroke {
       animation: houseDraw var(--dur, 1.3s) cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0s) forwards;
     }
     .intro-ready .house-room {
-      animation: roomFillUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--fill-delay, 0.7s) forwards;
+      animation: roomFillUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--fill-delay, 0.6s) forwards;
     }
     .intro-bar-fill {
       height: 100%;
@@ -1067,15 +1111,15 @@
 </head>
 <body>
   <!-- INTRO / SPLASH SCREEN -->
-  <div id="app-intro-overlay" onclick="cerrarIntro()" style="position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at center, #1A3D63 0%, #0A1931 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.45s ease;will-change:opacity;cursor:pointer;">
-    <div style="text-align:center;">
+  <div id="app-intro-overlay" onclick="cerrarIntro()">
+    <div class="intro-inner">
       <svg width="188" height="188" viewBox="0 0 120 120" style="display:block;margin:0 auto 14px;overflow:visible;">
         <!-- Habitaciones rellenandose de abajo hacia arriba -->
-        <rect class="house-room" x="27" y="56" width="33" height="43" fill="#4A7FA7" style="--fill-delay:0.55s; --fill-op:0.65;" />
-        <rect class="house-room" x="60" y="56" width="33" height="43" fill="#50A88E" style="--fill-delay:0.75s; --fill-op:0.65;" />
-        <polygon class="house-room" points="16,56 60,16 104,56" fill="#B3CFE5" style="--fill-delay:0.95s; --fill-op:0.55;" />
-        <rect class="house-room" x="50" y="72" width="20" height="27" rx="2" fill="#0A1931" style="--fill-delay:1.1s; --fill-op:0.85;" />
-        <rect class="house-room" x="52" y="42" width="16" height="16" rx="3" fill="#FFC64F" style="--fill-delay:1.25s; --fill-op:0.9;" />
+        <rect class="house-room" x="27" y="56" width="33" height="43" fill="#4A7FA7" fill-opacity="0.65" style="--fill-delay:0.55s;" />
+        <rect class="house-room" x="60" y="56" width="33" height="43" fill="#50A88E" fill-opacity="0.65" style="--fill-delay:0.75s;" />
+        <polygon class="house-room" points="16,56 60,16 104,56" fill="#B3CFE5" fill-opacity="0.55" style="--fill-delay:0.95s;" />
+        <rect class="house-room" x="50" y="72" width="20" height="27" rx="2" fill="#0A1931" fill-opacity="0.85" style="--fill-delay:1.1s;" />
+        <rect class="house-room" x="52" y="42" width="16" height="16" rx="3" fill="#FFC64F" fill-opacity="0.9" style="--fill-delay:1.25s;" />
         <!-- Silueta exterior e interiores -->
         <path class="house-stroke" pathLength="100" d="M14 58 L60 16 L106 58" stroke="#B3CFE5" stroke-width="4.8" style="--dur:1.1s; --delay:0.05s;" />
         <path class="house-stroke" pathLength="100" d="M26 52 V100 H94 V52" stroke="#4A7FA7" stroke-width="4.8" style="--dur:1.3s; --delay:0.15s;" />
@@ -1095,14 +1139,20 @@
       const el = document.getElementById('app-intro-overlay');
       if (!el || el.dataset.closing) return;
       el.dataset.closing = '1';
+      document.documentElement.classList.remove('intro-active');
       el.style.opacity = '0';
-      setTimeout(() => el.remove(), 450);
+      setTimeout(() => {
+        el.remove();
+        if (typeof window.iniciarLicenciaPostIntro === 'function') {
+          window.iniciarLicenciaPostIntro();
+        }
+      }, 420);
     }
-    requestAnimationFrame(() => {
+    window.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(() => {
         const el = document.getElementById('app-intro-overlay');
         if (el) el.classList.add('intro-ready');
-        setTimeout(cerrarIntro, 2600);
+        setTimeout(cerrarIntro, 2550);
       });
     });
   </script>
@@ -1110,8 +1160,8 @@
   <!-- APP HEADER -->
   <header class="app-header">
     <div class="brand">
-      <img class="brand-logo-img" src="rentarent_logo.jpg" alt="RentaRent Logo" />
-      <div class="brand-title">RentaRent <span id="app-version" style="font-size:0.68rem;font-weight:600;opacity:0.75;margin-left:4px;">v1.08</span></div>
+      <img class="brand-logo-img" src="rentarent_logo.jpg" width="38" height="38" alt="RentaRent Logo" />
+      <div class="brand-title">RentaRent <span id="app-version" style="font-size:0.68rem;font-weight:600;opacity:0.75;margin-left:4px;">v1.09</span></div>
       <button id="install-pwa-btn" class="btn btn-primary btn-sm" style="display:none; margin-left:auto; margin-right:0.4rem; padding:0.35rem 0.65rem; font-size:0.75rem;" onclick="instalarPWA()">Instalar App</button>
       <button id="theme-toggle-btn" class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Alternar modo claro/oscuro" style="margin-left:auto; padding:0.4rem 0.65rem; font-size:1rem;">☀️</button>
     </div>
@@ -3059,8 +3109,8 @@ function guardarReserva(e) {
         inp.addEventListener('focus', openCal);
       });
     })();
-    // ---- PERMISO DE USO 15 DIAS + CLAVE CR ----
-    (function initLicenciaCR() {
+    // ---- PERMISO DE USO 15 DIAS + CLAVE CR (POSPUESTO POST-INTRO) ----
+    window.iniciarLicenciaPostIntro = function initLicenciaCR() {
       const TRIAL_KEY = 'rentarent_trial_start_v1';
       const LICENSE_KEY = 'rentarent_license_cr_v1';
       const DEVICE_KEY = 'rentarent_device_id_v1';
@@ -3157,7 +3207,7 @@ function guardarReserva(e) {
           header.appendChild(badge);
         }
       }
-    })();
+    };
     // ---- LAUNCHER PWA (INSTALAR EN TELEFONO) ----
     let deferredInstallPrompt = null;
     if ('serviceWorker' in navigator) {
