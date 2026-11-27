@@ -201,18 +201,19 @@ function guardarReserva(e) {
     }
 
 
-    function abrirHistorialReservas() {
+    function abrirHistorialReservas(propIdFiltro = null) {
       const listEl = document.getElementById('historial-reservas-list');
       if (!listEl) return;
       const hoyStr = new Date().toISOString().substring(0, 10);
       const pasadas = bookings
-        .filter(b => b.fechaSalida < hoyStr)
+        .filter(b => b.fechaSalida < hoyStr && (!propIdFiltro || b.propertyId === propIdFiltro))
         .sort((a, b) => b.fechaSalida.localeCompare(a.fechaSalida));
+      const totalHist = pasadas.reduce((s, b) => s + (b.importeCobrado || 0), 0);
 
       if (pasadas.length === 0) {
         listEl.innerHTML = '<div class="empty-state" style="padding:1.5rem;">No hay reservas pasadas en el historial.</div>';
       } else {
-        listEl.innerHTML = pasadas.map(b => {
+        listEl.innerHTML = `<div style="font-size:0.85rem;font-weight:700;color:var(--accent-primary);margin-bottom:0.65rem;">Total histórico (${pasadas.length} reservas): ${fmtMonto(totalHist)}</div>` + pasadas.map(b => {
           const p = properties.find(x => x.id === b.propertyId);
           const noches = calcularNoches(b.fechaEntrada, b.fechaSalida);
           return `

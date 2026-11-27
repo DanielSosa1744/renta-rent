@@ -8,8 +8,9 @@
         return;
       }
 
+      const hoyStr = new Date().toISOString().substring(0, 10);
       properties.forEach((p, idx) => {
-        const propBookings = bookings.filter(b => b.propertyId === p.id);
+        const propBookings = bookings.filter(b => b.propertyId === p.id && b.fechaSalida >= hoyStr);
         const totalIng = propBookings.reduce((s, b) => s + (b.importeCobrado || 0), 0);
         const grad = GIFTCARD_GRADIENTS[idx % GIFTCARD_GRADIENTS.length];
 
@@ -58,6 +59,13 @@
         const sel = document.getElementById('res-propiedad');
         if (sel) sel.value = propId;
       };
+
+      const btnHist = document.getElementById('prop-det-historial');
+      if (btnHist) {
+        btnHist.onclick = () => {
+          abrirHistorialReservas(propId);
+        };
+      }
 
       const btnEdit = document.getElementById('prop-det-editar');
       if (btnEdit) {

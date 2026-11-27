@@ -122,4 +122,66 @@
 
     // GRAFICO SIMPLE DASHBOARD
 
-window.RentaRent.dashboard = { renderDashboard, cambiarPeriodo, calcularRentabilidadReserva };
+window.RentaRent.dashboard = { renderDashboard, cambiarPeriodo, calcularRentabilidadReserva, abrirDetalleIngresos, abrirDetalleGastos };
+
+    function abrirDetalleIngresos() {
+      const listEl = document.getElementById('detalle-ingresos-list');
+      const totalEl = document.getElementById('detalle-ingresos-total');
+      if (!listEl) return;
+      const lista = bookings.slice().sort((a, b) => b.fechaEntrada.localeCompare(a.fechaEntrada));
+      const suma = lista.reduce((s, b) => s + (b.importeCobrado || 0), 0);
+      if (totalEl) totalEl.textContent = `Total Ingresos (${lista.length} reservas): ${fmtMonto(suma)}`;
+      if (lista.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">No hay movimientos de ingresos registrados.</div>';
+      } else {
+        listEl.innerHTML = lista.map(b => {
+          const p = properties.find(x => x.id === b.propertyId);
+          const totalRes = b.costoTotal || b.importeCobrado || 0;
+          const pagado = b.importeCobrado || 0;
+          const resta = Math.max(0, totalRes - pagado);
+          return `
+            <div class="list-card" style="padding:0.85rem;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                <div>
+                  <div style="font-weight:800; font-size:0.92rem; color:var(--text-main);">${p ? p.nombre : 'Propiedad'}</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted);">${b.huesped || 'Reserva sin nombre'} • ${b.canal}</div>
+                  <div style="font-size:0.74rem; color:var(--text-muted);">${formatFechaAR(b.fechaEntrada)} a ${formatFechaAR(b.fechaSalida)}</div>
+                  ${resta > 0 ? `<div style="font-size:0.74rem; color:var(--accent-warning); font-weight:700; margin-top:2px;">Resta pagar: ${fmtMonto(resta)}</div>` : ''}
+                </div>
+                <div style="text-align:right; font-weight:800; color:#38bdf8; font-size:0.95rem;">+${fmtMonto(pagado)}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      switchTab('ingresos-detalle');
+    }
+
+    function abrirDetalleGastos() {
+      const listEl = document.getElementById('detalle-gastos-list');
+      const totalEl = document.getElementById('detalle-gastos-total');
+      if (!listEl) return;
+      const lista = expenses.slice().sort((a, b) => b.fecha.localeCompare(a.fecha));
+      const suma = lista.reduce((s, e) => s + (e.importe || 0), 0);
+      if (totalEl) totalEl.textContent = `Total Gastos (${lista.length} movimientos): -${fmtMonto(suma)}`;
+      if (lista.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">No hay movimientos de gastos registrados.</div>';
+      } else {
+        listEl.innerHTML = lista.map(e => {
+          const p = properties.find(x => x.id === e.propertyId);
+          return `
+            <div class="list-card" style="padding:0.85rem;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                <div>
+                  <div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">${e.categoria}</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted);">${p ? p.nombre : 'General'} • ${formatFechaAR(e.fecha)}</div>
+                  ${e.descripcion ? `<div style="font-size:0.75rem; color:var(--text-main); margin-top:2px;">${e.descripcion}</div>` : ''}
+                </div>
+                <div style="font-weight:800; color:#f87171; font-size:0.95rem;">-${fmtMonto(e.importe || 0)}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      switchTab('gastos-detalle');
+    }
