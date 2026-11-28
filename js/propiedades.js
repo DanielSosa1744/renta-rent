@@ -21,7 +21,7 @@
         card.innerHTML = `
           <div>
             <div class="giftcard-top">
-              <span class="giftcard-badge">${p.tipo || 'Alojamiento'}</span>
+              <span class="giftcard-badge">${p.tipo || 'Alojamiento'}${p.modalidad === 'largo_plazo' ? ' • ' + (p.aniosContrato || 2) + '+ años' : ''}</span>
               <span style="font-size:0.75rem;opacity:0.9;">📅</span>
             </div>
             <div class="giftcard-title">${p.nombre}</div>
@@ -163,11 +163,16 @@
       }).join('');
     }
 
+function toggleCamposLargoPlazo() {
+  const mod = document.getElementById('prop-modalidad')?.value || 'temporario';
+  const row = document.getElementById('prop-largo-plazo-row');
+  if (row) row.style.display = (mod === 'largo_plazo') ? 'grid' : 'none';
+}
 function abrirModalPropiedad() {
   document.getElementById('prop-id').value = '';
   document.getElementById('prop-nombre').value = '';
   document.getElementById('prop-direccion').value = '';
-  document.getElementById('prop-tipo').value = 'Apartamento';
+  document.getElementById('prop-tipo').value = 'Apartamento'; const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = 'temporario'; const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = 2; const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = ''; toggleCamposLargoPlazo();
   document.getElementById('prop-modal-title').textContent = 'Nuevo Alojamiento';
   document.getElementById('modal-propiedad').classList.add('open');
 }
@@ -177,10 +182,10 @@ function guardarPropiedad(e) {
   const id = document.getElementById('prop-id').value || 'prop_' + Date.now();
   const nombre = document.getElementById('prop-nombre').value.trim();
   const direccion = document.getElementById('prop-direccion').value.trim();
-  const tipo = document.getElementById('prop-tipo').value;
+  const tipo = document.getElementById('prop-tipo').value; const modalidad = document.getElementById('prop-modalidad')?.value || 'temporario'; const aniosContrato = Math.max(2, parseInt(document.getElementById('prop-anios-contrato')?.value, 10) || 2); const valorMensual = Math.max(0, parseFloat(document.getElementById('prop-valor-mensual')?.value) || 0);
   const idx = properties.findIndex(p => p.id === id);
   const existing = idx !== -1 ? properties[idx] : {};
-  const data = { activa: true, tarifaBase: 0, notas: '', ...existing, id, nombre, direccion, tipo };
+  const data = { activa: true, tarifaBase: 0, notas: '', ...existing, id, nombre, direccion, tipo, modalidad, aniosContrato, valorMensual };
 
   if (idx !== -1) properties[idx] = data;
   else properties.push(data);
@@ -198,7 +203,7 @@ function editarPropiedad(id) {
   document.getElementById('prop-id').value = p.id;
   document.getElementById('prop-nombre').value = p.nombre;
   document.getElementById('prop-direccion').value = p.direccion || '';
-  document.getElementById('prop-tipo').value = p.tipo || 'Apartamento';
+  document.getElementById('prop-tipo').value = p.tipo || 'Apartamento'; const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = p.modalidad || 'temporario'; const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = p.aniosContrato || 2; const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = p.valorMensual || ''; toggleCamposLargoPlazo();
   document.getElementById('prop-modal-title').textContent = 'Editar Alojamiento';
   document.getElementById('modal-propiedad').classList.add('open');
 }
@@ -242,6 +247,7 @@ function guardarTarifaPropiedad() {
   if (typeof mostrarAlerta === 'function') mostrarAlerta('Tarifa sugerida guardada: ' + fmtMonto(val) + ' / noche', 'Tarifa Actualizada');
 }
 window.RentaRent.propiedades = { renderGiftcards, abrirModalPropDetalle, renderReservasPropiedad, renderPropiedades, abrirModalPropiedad, guardarPropiedad, editarPropiedad, eliminarPropiedad, duplicarPropiedad, toggleEstadoPropiedad };
+
 
 
 
