@@ -10,7 +10,7 @@
       }
 
       properties.forEach((p, idx) => {
-        const propBookings = bookings.filter(b => b.propertyId === p.id);
+        const hoyG = new Date().toISOString().substring(0, 10); const propBookings = bookings.filter(b => b.propertyId === p.id && b.fechaSalida >= hoyG);
         const totalIng = propBookings.reduce((s, b) => s + (b.importeCobrado || 0), 0);
         const grad = GIFTCARD_GRADIENTS[idx % GIFTCARD_GRADIENTS.length];
 
@@ -131,7 +131,7 @@
       }
 
       listEl.innerHTML = properties.map(p => {
-        const propBookings = bookings.filter(b => b.propertyId === p.id);
+        const hoyG = new Date().toISOString().substring(0, 10); const propBookings = bookings.filter(b => b.propertyId === p.id && b.fechaSalida >= hoyG);
         const propExpenses = expenses.filter(e => e.propertyId === p.id);
         const totalIng = propBookings.reduce((s, b) => s + b.importeCobrado, 0);
         const totalGas = propExpenses.reduce((s, e) => s + e.importe, 0);
@@ -242,6 +242,7 @@ function guardarTarifaPropiedad() {
   if (typeof mostrarAlerta === 'function') mostrarAlerta('Tarifa sugerida guardada: ' + fmtMonto(val) + ' / noche', 'Tarifa Actualizada');
 }
 window.RentaRent.propiedades = { renderGiftcards, abrirModalPropDetalle, renderReservasPropiedad, renderPropiedades, abrirModalPropiedad, guardarPropiedad, editarPropiedad, eliminarPropiedad, duplicarPropiedad, toggleEstadoPropiedad };
+
 
 
 
