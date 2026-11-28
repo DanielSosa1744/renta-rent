@@ -1,0 +1,43 @@
+﻿/* ---- MODULO FINANZAS & GRILLA EXCEL ---- */
+.excel-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: rgba(10, 25, 49, 0.35);
+}
+body.light-mode .excel-table-wrap {
+  background: rgba(255, 255, 255, 0.85);
+}
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.excel-table th, .excel-table td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+.excel-table th {
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  background: rgba(26, 61, 99, 0.45);
+}
+body.light-mode .excel-table th {
+  background: rgba(195, 231, 241, 0.45);
+  color: #20373B;
+}
+.excel-table tr:hover td {
+  background: rgba(16, 185, 129, 0.08);
+}
+.global-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}

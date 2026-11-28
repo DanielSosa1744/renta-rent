@@ -94,4 +94,13 @@
     }
 
 
+function migrarDatosRetrocompatibles() {
+  properties = properties.map(p => ({ activa: true, tarifaBase: 0, notas: '', ...p }));
+  bookings = bookings.map(b => ({ estado: 'confirmada', ...b }));
+}
+const _origCargarDatos = cargarDatos;
+cargarDatos = function() {
+  _origCargarDatos();
+  migrarDatosRetrocompatibles();
+};
 window.RentaRent.storage = { KEYS, cargarDatos, guardarDatos, cargarDatosSemilla, obtenerArchivoTickets, guardarTicketEnArchivo };

@@ -34,57 +34,6 @@
     // ==========================================
     // RENDER PROPIEDADES
     // ==========================================
-
-    function abrirArchivoGastos() {
-      const inp = document.getElementById('buscar-gasto-input');
-      if (inp) inp.value = '';
-      renderArchivoGastos();
-      document.getElementById('modal-archivo-gastos').classList.add('open');
-    }
-
-    function renderArchivoGastos() {
-      const listEl = document.getElementById('archivo-gastos-list');
-      const totalEl = document.getElementById('archivo-gastos-total');
-      if (!listEl) return;
-      const q = (document.getElementById('buscar-gasto-input')?.value || '').trim().toLowerCase();
-
-      const filtrados = expenses.filter(e => {
-        if (!q) return true;
-        const p = properties.find(x => x.id === e.propertyId);
-        return (e.categoria || '').toLowerCase().includes(q) ||
-               (e.descripcion || '').toLowerCase().includes(q) ||
-               (p ? p.nombre.toLowerCase().includes(q) : false) ||
-               formatFechaAR(e.fecha).toLowerCase().includes(q);
-      }).sort((a, b) => b.fecha.localeCompare(a.fecha));
-
-      const suma = filtrados.reduce((s, e) => s + (e.importe || 0), 0);
-      if (totalEl) totalEl.textContent = `Total filtrado (${filtrados.length} registros): ${fmtMonto(suma)}`;
-
-      if (filtrados.length === 0) {
-        listEl.innerHTML = '<div class="empty-state" style="padding:1.5rem;">No se encontraron gastos registrados.</div>';
-        return;
-      }
-
-      listEl.innerHTML = filtrados.map(e => {
-        const p = properties.find(x => x.id === e.propertyId);
-        const res = e.bookingId ? bookings.find(b => b.id === e.bookingId) : null;
-        return `
-          <div class="list-card" style="padding:0.8rem;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
-              <div>
-                <div style="font-weight:800; font-size:0.88rem; color:var(--text-main);">${e.categoria}</div>
-                <div style="font-size:0.76rem; color:var(--text-muted);">${p ? p.nombre : 'General'} • ${formatFechaAR(e.fecha)}</div>
-                ${e.descripcion ? `<div style="font-size:0.75rem; color:var(--text-main); margin-top:2px;">${e.descripcion}</div>` : ''}
-                ${res ? `<div style="font-size:0.72rem; color:var(--accent-primary); margin-top:2px;">Reserva: ${res.huesped || 'Sin nombre'}</div>` : ''}
-              </div>
-              <div style="font-weight:800; color:#f87171; font-size:0.92rem;">-${fmtMonto(e.importe || 0)}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-
     function abrirModalGasto() {
       if (properties.length === 0) {
         alert('Debés crear al menos un alojamiento antes de registrar gastos.');
@@ -141,5 +90,38 @@
     // ==========================================
     // ACCIONES CRUD (PROPIEDADES)
     // ==========================================
+    function abrirModalPropiedad() {
+      // FREEMIUM CHECK STRUCT
+      if (properties.length >= 1) {
+        // En plan gratis se permite 1 propiedad para validación MVP
+        // mostramos banner de beneficio Premium
+      }
+      document.getElementById('prop-id').value = '';
+      document.getElementById('prop-nombre').value = '';
+      document.getElementById('prop-direccion').value = '';
+      document.getElementById('prop-modal-title').textContent = 'Nueva Propiedad';
+      document.getElementById('modal-propiedad').classList.add('open');
+    }
 
-window.RentaRent.gastos = { renderGastos, abrirModalGasto, asociarGastoReserva, guardarGasto, eliminarGasto, abrirArchivoGastos, renderArchivoGastos };
+    function guardarPropiedad(e) {
+      e.preventDefault();
+      const id = document.getElementById('prop-id').value || 'prop_' + Date.now();
+      const nombre = document.getElementById('prop-nombre').value.trim();
+      const direccion = document.getElementById('prop-direccion').value.trim();
+      const tipo = document.getElementById('prop-tipo').value;
+
+      const idx = properties.findIndex(p => p.id === id);
+      const data = { id, nombre, direccion, tipo };
+
+      if (idx !== -1) properties[idx] = data;
+      else properties.push(data);
+
+      guardarDatos();
+      cerrarModal('modal-propiedad');
+      poblarSelectsPropiedades();
+      renderDashboard();
+      renderPropiedades();
+    }
+
+window.RentaRent.gastos = { renderGastos, abrirModalGasto, asociarGastoReserva, guardarGasto, eliminarGasto };
+

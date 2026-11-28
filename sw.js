@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rentarent-v1.12';
+const CACHE_NAME = 'rentarent-v2.00';
 const ASSETS = [
   '/',
   '/index.html',
@@ -9,16 +9,20 @@ const ASSETS = [
   '/css/layout.css',
   '/css/components.css',
   '/css/dashboard.css',
+  '/css/propiedades.css',
   '/css/reservas.css',
+  '/css/gastos.css',
   '/css/reportes.css',
+  '/css/finanzas.css',
   '/js/core.js',
   '/js/storage.js',
   '/js/ui.js',
   '/js/calendario.js',
-  '/js/giftcards.js',
-  '/js/dashboard.js',
+  '/js/finanzas.js',
+  '/js/propiedades.js',
   '/js/reservas.js',
   '/js/gastos.js',
+  '/js/dashboard.js',
   '/js/reportes.js',
   '/js/licencia.js'
 ];

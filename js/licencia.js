@@ -1,4 +1,4 @@
-﻿    window.iniciarLicenciaPostIntro = function initLicenciaCR() {
+﻿    (function initLicenciaCR() {
       const TRIAL_KEY = 'rentarent_trial_start_v1';
       const LICENSE_KEY = 'rentarent_license_cr_v1';
       const DEVICE_KEY = 'rentarent_device_id_v1';
@@ -95,7 +95,7 @@
           header.appendChild(badge);
         }
       }
-    };
+    })();
     // ---- LAUNCHER PWA (INSTALAR EN TELEFONO) ----
     let deferredInstallPrompt = null;
     if ('serviceWorker' in navigator) {
@@ -125,5 +125,40 @@
         alert('Para instalar en tu teléfono:\n\n• En Android (Chrome): Toca el menú ⋮ → "Instalar aplicación".\n• En iPhone (Safari): Toca Compartir → "Agregar a pantalla de inicio".');
       }
     }
+    // ---- TECLA ATRAS DEL TELEFONO ----
+    (function initBackHandler() {
+      const origOpen = window.abrirModalPropDetalle;
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.giftcard') || e.target.closest('[onclick*="abrirModal"]')) {
+          history.pushState({ modal: true }, '');
+        }
+      });
+      window.addEventListener('popstate', () => {
+        const openModals = Array.from(document.querySelectorAll('.modal-overlay.open'));
+        if (openModals.length > 0) {
+          openModals[openModals.length - 1].classList.remove('open');
+        } else {
+          const activeTab = document.querySelector('.tab-content.active');
+          if (activeTab && activeTab.id !== 'tab-dashboard') {
+            switchTab('dashboard');
+          }
+        }
+      });
+    })();
+  
 
-window.RentaRent.licencia = { iniciarLicenciaPostIntro, instalarPWA };
+
+
+
+
+
+
+
+
+
+
+
+
+window.RentaRent.licencia = { instalarPWA: typeof instalarPWA === 'function' ? instalarPWA : function(){} };
+
+

@@ -1,12 +1,12 @@
 ﻿/* ---- CARDS ---- */
     .card {
-      background: rgba(26, 61, 99, 0.92);
+      background: var(--bg-card);
+      
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 1.25rem;
       margin-bottom: 1.25rem;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
-      contain: layout style paint;
+      box-shadow: var(--shadow-lg);
     }
 
     .card-title {
@@ -273,4 +273,5 @@
       color: var(--text-main);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+
 

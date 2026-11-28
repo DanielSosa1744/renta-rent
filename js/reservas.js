@@ -55,7 +55,33 @@
     // RENDER GASTOS
     // ==========================================
 
-    function abrirModalReserva() {
+    function actualizarTarifaSugeridaReserva() {
+  const propId = document.getElementById('res-propiedad')?.value;
+  const p = properties.find(x => x.id === propId);
+  const inpPrecio = document.getElementById('res-precio-noche');
+  if (inpPrecio) inpPrecio.value = (p && p.tarifaBase) ? p.tarifaBase : '';
+  recalcularCostoReservaPorNoches(true);
+}
+
+function recalcularCostoReservaPorNoches(actualizarTotal = true) {
+  const ent = document.getElementById('res-entrada')?.value;
+  const sal = document.getElementById('res-salida')?.value;
+  const noches = (ent && sal && sal > ent) ? calcularNoches(ent, sal) : 0;
+  const inpNoches = document.getElementById('res-noches');
+  if (inpNoches) inpNoches.value = noches;
+
+  if (actualizarTotal) {
+    const precio = Math.max(0, parseFloat(document.getElementById('res-precio-noche')?.value) || 0);
+    const inpTotal = document.getElementById('res-costo-total');
+    if (inpTotal && noches > 0 && precio > 0) {
+      inpTotal.value = noches * precio;
+    } else if (inpTotal && noches === 0) {
+      inpTotal.value = '';
+    }
+    if (typeof actualizarRestaPagar === 'function') actualizarRestaPagar();
+  }
+}
+function abrirModalReserva() {
       if (properties.length === 0) {
         alert('Debés crear al menos un alojamiento antes de registrar una reserva.');
         switchTab('propiedades');
@@ -64,11 +90,11 @@
       document.getElementById('res-id').value = '';
       document.getElementById('res-huesped').value = '';
       document.getElementById('res-canal').value = '';
-      document.getElementById('res-entrada').value = new Date().toISOString().substring(0, 10);
-      document.getElementById('res-salida').value = '';
+      document.getElementById('res-entrada').value = '';
+      document.getElementById('res-salida').value = ''; const inpCH = document.getElementById('res-cant-huespedes'); if (inpCH) inpCH.value = 1;
       document.getElementById('res-importe').value = '';
       document.getElementById('reserva-modal-title').textContent = 'Nueva Reserva';
-      resCalFecha = new Date(); resCalFecha.setDate(1); resSelectStep = 0; document.getElementById('res-entrada-lbl').textContent = formatFechaAR(document.getElementById('res-entrada').value); document.getElementById('res-salida-lbl').textContent = formatFechaAR(document.getElementById('res-salida').value); renderResCalendario(); document.getElementById('res-costo-total').value = ''; setTipoPagoReserva('total'); document.getElementById('modal-reserva').classList.add('open');
+      resCalFecha = new Date(); resCalFecha.setDate(1); resSelectStep = 0; document.getElementById('res-entrada-lbl').textContent = formatFechaAR(document.getElementById('res-entrada').value); document.getElementById('res-salida-lbl').textContent = formatFechaAR(document.getElementById('res-salida').value); renderResCalendario(); document.getElementById('res-costo-total').value = ''; setTipoPagoReserva('total'); actualizarTarifaSugeridaReserva(); document.getElementById('modal-reserva').classList.add('open');
     }
 
     let tipoPagoReserva = 'total';
@@ -81,9 +107,14 @@
       if (btnT) btnT.classList.toggle('active', tipo === 'total');
       if (btnP) btnP.classList.toggle('active', tipo === 'parcial');
       if (row) row.style.display = (tipo === 'parcial') ? 'grid' : 'none';
+      const total = Math.max(0, parseFloat(document.getElementById('res-costo-total').value) || 0);
       if (tipo === 'total') {
-        const total = Math.max(0, parseFloat(document.getElementById('res-costo-total').value) || 0);
         document.getElementById('res-importe').value = total || '';
+      } else if (tipo === 'parcial') {
+        const cur = parseFloat(document.getElementById('res-importe').value) || 0;
+        if (total > 0 && (cur === 0 || cur >= total)) {
+          document.getElementById('res-importe').value = Math.round(total * 0.30);
+        }
       }
       actualizarRestaPagar();
     }
@@ -111,10 +142,11 @@ function guardarReserva(e) {
       const id = document.getElementById('res-id').value || 'res_' + Date.now();
       const propertyId = document.getElementById('res-propiedad').value;
       const huesped = document.getElementById('res-huesped').value.trim();
+      const cantHuespedes = Math.max(1, parseInt(document.getElementById('res-cant-huespedes')?.value, 10) || 1);
       const fechaEntrada = document.getElementById('res-entrada').value;
       const fechaSalida = document.getElementById('res-salida').value;
       const canal = document.getElementById('res-canal').value;
-      if (!canal) { mostrarAlerta('Por favor elige un canal.'); return; }
+      if (!canal) { alert('Por favor elige un canal.'); return; }
       const costoTotal = Math.max(0, parseFloat(document.getElementById('res-costo-total').value) || 0);
       let importeCobrado = (tipoPagoReserva === 'total')
         ? costoTotal
@@ -127,7 +159,7 @@ function guardarReserva(e) {
       }
 
       const idx = bookings.findIndex(b => b.id === id);
-      const data = { id, propertyId, huesped, fechaEntrada, fechaSalida, canal, costoTotal, importeCobrado };
+      const data = { id, propertyId, huesped, cantHuespedes, fechaEntrada, fechaSalida, canal, costoTotal, importeCobrado };
 
       if (idx !== -1) bookings[idx] = data;
       else bookings.push(data);
@@ -176,7 +208,7 @@ function guardarReserva(e) {
               <div style="font-size:0.74rem; color:var(--text-muted);">Entrada: ${t.fechaEntrada} • Emitido: ${t.fechaCreacion}</div>
             </div>
             <div style="display:flex; gap:0.35rem;">
-              <button type="button" class="btn btn-secondary btn-sm" onclick="copiarTicketArchivo('${t.id}', this)">Copiar</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="verTicketArchivo('${t.id}')">Ver</button><button type="button" class="btn btn-secondary btn-sm" onclick="copiarTicketArchivo('${t.id}', this)">Copiar</button>
               <button type="button" class="btn btn-danger btn-sm" onclick="eliminarTicketArchivo('${t.id}')">X</button>
             </div>
           </div>
@@ -184,7 +216,16 @@ function guardarReserva(e) {
       `).join('');
     }
 
-    function copiarTicketArchivo(id, btnEl) {
+    
+function verTicketArchivo(id) {
+  const t = obtenerArchivoTickets().find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('ticket-texto').value = t.texto;
+  const btn = document.getElementById('btn-copiar-ticket');
+  if (btn) btn.textContent = 'Copiar Ticket';
+  document.getElementById('modal-ticket').classList.add('open');
+}
+function copiarTicketArchivo(id, btnEl) {
       const t = obtenerArchivoTickets().find(x => x.id === id);
       if (!t) return;
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -198,39 +239,6 @@ function guardarReserva(e) {
       const lista = obtenerArchivoTickets().filter(x => x.id !== id);
       localStorage.setItem(TICKETS_KEY, JSON.stringify(lista));
       renderArchivoTickets();
-    }
-
-
-    function abrirHistorialReservas(propIdFiltro = null) {
-      const listEl = document.getElementById('historial-reservas-list');
-      if (!listEl) return;
-      const hoyStr = new Date().toISOString().substring(0, 10);
-      const pasadas = bookings
-        .filter(b => b.fechaSalida < hoyStr && (!propIdFiltro || b.propertyId === propIdFiltro))
-        .sort((a, b) => b.fechaSalida.localeCompare(a.fechaSalida));
-      const totalHist = pasadas.reduce((s, b) => s + (b.importeCobrado || 0), 0);
-
-      if (pasadas.length === 0) {
-        listEl.innerHTML = '<div class="empty-state" style="padding:1.5rem;">No hay reservas pasadas en el historial.</div>';
-      } else {
-        listEl.innerHTML = `<div style="font-size:0.85rem;font-weight:700;color:var(--accent-primary);margin-bottom:0.65rem;">Total histórico (${pasadas.length} reservas): ${fmtMonto(totalHist)}</div>` + pasadas.map(b => {
-          const p = properties.find(x => x.id === b.propertyId);
-          const noches = calcularNoches(b.fechaEntrada, b.fechaSalida);
-          return `
-            <div class="list-card" style="padding:0.8rem;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                  <div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">${p ? p.nombre : 'Propiedad'}</div>
-                  <div style="font-size:0.78rem; color:var(--text-muted);">${b.huesped || 'Reserva sin nombre'} • ${b.canal}</div>
-                  <div style="font-size:0.74rem; color:var(--text-muted);">${formatFechaAR(b.fechaEntrada)} a ${formatFechaAR(b.fechaSalida)} (${noches}n)</div>
-                </div>
-                <div style="font-weight:800; color:var(--accent-primary); font-size:0.95rem;">${fmtMonto(b.importeCobrado || 0)}</div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-      document.getElementById('modal-historial-reservas').classList.add('open');
     }
 
 
@@ -255,6 +263,7 @@ function guardarReserva(e) {
       const propId = document.getElementById('res-propiedad').value;
       const p = properties.find(x => x.id === propId);
       const huesped = document.getElementById('res-huesped').value.trim();
+      const cantHuespedes = Math.max(1, parseInt(document.getElementById('res-cant-huespedes')?.value, 10) || 1);
       const fechaEntrada = document.getElementById('res-entrada').value;
       const fechaSalida = document.getElementById('res-salida').value;
       const canal = document.getElementById('res-canal').value;
@@ -287,11 +296,12 @@ function guardarReserva(e) {
         `----------------------------------------`,
         `Alojamiento: ${p ? p.nombre : 'Propiedad'}`,
         p && p.direccion ? `Dirección: ${p.direccion}` : null,
-        `Huésped: ${huesped || 'Sin especificar'}`,
+        `Huésped: ${huesped || 'Sin especificar'} (${document.getElementById('res-cant-huespedes')?.value || 1} pers.)`,
         ` (${noches} ${noches === 1 ? 'noche' : 'noches'})`,
         `Check-in:  ${formatFechaAR(fechaEntrada)}`,
         `Check-out: ${formatFechaAR(fechaSalida)}`,
         `Canal: ${canal}`,
+        'Estado: Confirmado',
         `----------------------------------------`,
         `Costo Total: ${fmtMonto(total)}`,
         restaFinal === 0 ? `PAGADO` : `Seña: ${fmtMonto(senaFinal)}`,
@@ -323,11 +333,12 @@ function guardarReserva(e) {
         `----------------------------------------`,
         `Alojamiento: ${p ? p.nombre : 'Propiedad'}`,
         p && p.direccion ? `Dirección: ${p.direccion}` : null,
-        `Huésped: ${b.huesped || 'Sin especificar'}`,
+        `Huésped: ${b.huesped || 'Sin especificar'} (${b.cantHuespedes || 1} pers.)`,
         ` (${noches} ${noches === 1 ? 'noche' : 'noches'})`,
         `Check-in:  ${formatFechaAR(b.fechaEntrada)}`,
         `Check-out: ${formatFechaAR(b.fechaSalida)}`,
         `Canal: ${b.canal}`,
+        'Estado: Confirmado',
         `----------------------------------------`,
         `Costo Total: ${fmtMonto(total)}`,
         resta === 0 ? `PAGADO` : `Seña: ${fmtMonto(sena)}`,
@@ -360,11 +371,11 @@ function guardarReserva(e) {
       if (!b) return;
       document.getElementById('res-id').value = b.id;
       document.getElementById('res-propiedad').value = b.propertyId;
-      document.getElementById('res-huesped').value = b.huesped || '';
+      document.getElementById('res-huesped').value = b.huesped || ''; const inpCH = document.getElementById('res-cant-huespedes'); if (inpCH) inpCH.value = b.cantHuespedes || 1;
       document.getElementById('res-entrada').value = b.fechaEntrada;
       document.getElementById('res-salida').value = b.fechaSalida; document.getElementById('res-entrada-lbl').textContent = formatFechaAR(b.fechaEntrada); document.getElementById('res-salida-lbl').textContent = formatFechaAR(b.fechaSalida); if (b.fechaEntrada) { const [y,m] = b.fechaEntrada.split('-'); resCalFecha = new Date(parseInt(y), parseInt(m)-1, 1); } renderResCalendario();
       document.getElementById('res-canal').value = b.canal;
-      document.getElementById('res-costo-total').value = b.costoTotal || ''; document.getElementById('res-importe').value = b.importeCobrado || ''; const esParcial = (b.costoTotal > 0 && (b.importeCobrado || 0) < b.costoTotal); setTipoPagoReserva(esParcial ? 'parcial' : 'total');
+      document.getElementById('res-costo-total').value = b.costoTotal || ''; document.getElementById('res-importe').value = b.importeCobrado || ''; const nEd = (b.fechaEntrada && b.fechaSalida) ? calcularNoches(b.fechaEntrada, b.fechaSalida) : 0; const inpN = document.getElementById('res-noches'); if (inpN) inpN.value = nEd; const pEd = properties.find(x => x.id === b.propertyId); const inpPr = document.getElementById('res-precio-noche'); if (inpPr) inpPr.value = (pEd && pEd.tarifaBase) ? pEd.tarifaBase : (nEd > 0 && b.costoTotal ? Math.round(b.costoTotal / nEd) : ''); const esParcial = (b.costoTotal > 0 && (b.importeCobrado || 0) < b.costoTotal); setTipoPagoReserva(esParcial ? 'parcial' : 'total');
       document.getElementById('reserva-modal-title').textContent = 'Editar Reserva';
       resSelectStep = 0;
       document.getElementById('modal-reserva').classList.add('open');
@@ -383,4 +394,198 @@ function guardarReserva(e) {
     // ACCIONES CRUD (GASTOS)
     // ==========================================
 
-window.RentaRent.reservas = { renderReservas, abrirModalReserva, guardarReserva, editarReserva, eliminarReserva, setTipoPagoReserva, actualizarRestaPagar, abrirHistorialReservas, generarTicketDesdeForm, generarTicketReserva, copiarTicket, abrirArchivoTickets, renderArchivoTickets };
+function abrirHistorialReservas(propIdFiltro = null) {
+  const listEl = document.getElementById('historial-reservas-list');
+  if (!listEl) return;
+  const hoyStr = new Date().toISOString().substring(0, 10);
+  const pasadas = bookings
+    .filter(b => b.fechaSalida < hoyStr && (!propIdFiltro || b.propertyId === propIdFiltro))
+    .sort((a, b) => b.fechaSalida.localeCompare(a.fechaSalida));
+  const totalHist = pasadas.reduce((s, b) => s + (b.importeCobrado || 0), 0);
+
+  if (pasadas.length === 0) {
+    listEl.innerHTML = '<div class="empty-state" style="padding:1.5rem;">No hay reservas pasadas en el historial.</div>';
+  } else {
+    listEl.innerHTML = '<div style="font-size:0.85rem;font-weight:700;color:var(--accent-primary);margin-bottom:0.65rem;">Total histórico (' + pasadas.length + ' reservas): ' + fmtMonto(totalHist) + '</div>' + pasadas.map(b => {
+      const p = properties.find(x => x.id === b.propertyId);
+      const noches = calcularNoches(b.fechaEntrada, b.fechaSalida);
+      return '<div class="list-card" style="padding:0.8rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;font-size:0.9rem;color:var(--text-main);">' + (p ? p.nombre : 'Propiedad') + '</div><div style="font-size:0.78rem;color:var(--text-muted);">' + (b.huesped || 'Reserva sin nombre') + ' • ' + b.canal + '</div><div style="font-size:0.74rem;color:var(--text-muted);">' + formatFechaAR(b.fechaEntrada) + ' a ' + formatFechaAR(b.fechaSalida) + ' (' + noches + 'n)</div></div><div style="font-weight:800;color:var(--accent-primary);font-size:0.95rem;">' + fmtMonto(b.importeCobrado || 0) + '</div></div></div>';
+    }).join('');
+  }
+  document.getElementById('modal-historial-reservas').classList.add('open');
+}
+
+let lastTicketCanvas = null;
+
+function descargarTicketImagen() {
+  const texto = document.getElementById('ticket-texto')?.value || '';
+  if (!texto) return;
+  const lines = texto.split('\n');
+  const w = 420;
+  const lineH = 24;
+  const zigH = 12;
+  const h = Math.max(500, 155 + lines.length * lineH + 58 + zigH);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  lastTicketCanvas = canvas;
+
+  // Fondo transparente debajo del zigzag
+  ctx.clearRect(0, 0, w, h);
+
+  // Cuerpo blanco con borde inferior zigzag
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(w, 0);
+  ctx.lineTo(w, h - zigH);
+  const step = 14;
+  for (let x = w; x > 0; x -= step) {
+    ctx.lineTo(x - step / 2, h);
+    ctx.lineTo(x - step, h - zigH);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Borde gris izquierdo sutil
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillRect(0, 0, 8, h - zigH);
+
+  // Marca de agua diagonal RentaRent
+  ctx.save();
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.028)';
+  ctx.font = 'bold 64px sans-serif';
+  ctx.textAlign = 'center';
+  for (let y = 140; y < h - 30; y += 140) {
+    ctx.save();
+    ctx.translate(w / 2, y);
+    ctx.rotate(-0.35);
+    ctx.fillText('RentaRent', 0, 0);
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Logo de la casita de la intro
+  const cx = w / 2;
+  ctx.save();
+  ctx.translate(cx - 24, 14);
+  ctx.scale(0.42, 0.42);
+  // Techo relleno
+  ctx.fillStyle = 'rgba(179,207,229,0.5)';
+  ctx.beginPath(); ctx.moveTo(16, 56); ctx.lineTo(60, 18); ctx.lineTo(104, 56); ctx.closePath(); ctx.fill();
+  // Paredes rellenas
+  ctx.fillStyle = 'rgba(74,127,167,0.5)';
+  ctx.fillRect(26, 56, 34, 44);
+  ctx.fillStyle = 'rgba(80,168,142,0.5)';
+  ctx.fillRect(60, 56, 34, 44);
+  // Contorno techo y paredes
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 6;
+  ctx.strokeStyle = '#1A3D63';
+  ctx.beginPath(); ctx.moveTo(14, 56); ctx.lineTo(60, 18); ctx.lineTo(106, 56); ctx.closePath(); ctx.stroke();
+  ctx.strokeStyle = '#4A7FA7';
+  ctx.beginPath(); ctx.moveTo(26, 56); ctx.lineTo(26, 100); ctx.lineTo(94, 100); ctx.lineTo(94, 56); ctx.stroke();
+  // Puerta y ventana
+  ctx.fillStyle = '#0A1931'; ctx.fillRect(50, 74, 20, 26);
+  ctx.fillStyle = '#FFC64F'; ctx.fillRect(53, 37, 14, 14);
+  ctx.restore();
+
+  // Encabezado
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('RentaRent', w / 2, 78);
+  ctx.font = '12px sans-serif';
+  ctx.fillStyle = '#475569';
+  ctx.fillText('GESTIÓN DE ALQUILERES TEMPORARIOS', w / 2, 96);
+
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(24, 110);
+  ctx.lineTo(w - 20, 110);
+  ctx.stroke();
+
+  // Contenido del ticket
+  let yPos = 136;
+  lines.forEach((ln) => {
+    const clean = ln.replace(/\*/g, '').trim();
+    if (!clean) { yPos += 10; return; }
+    if (clean.startsWith('----')) {
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(24, yPos - 6);
+      ctx.lineTo(w - 20, yPos - 6);
+      ctx.stroke();
+      yPos += 14;
+      return;
+    }
+    if (clean === 'RentaRent') return;
+
+    const isBold = clean.startsWith('COMPROBANTE') || clean.startsWith('Alojamiento:') || clean.startsWith('Dirección:') || clean.startsWith('Estado:') || clean.startsWith('Costo Total') || clean === 'PAGADO' || clean.startsWith('Resta Pagar');
+    ctx.font = (isBold ? 'bold ' : '') + '15px monospace';
+    ctx.fillStyle = (clean === 'PAGADO' || clean.startsWith('Estado:')) ? '#047857' : '#0f172a';
+
+    const colonIdx = clean.indexOf(':');
+    if (colonIdx > 0 && !clean.match(/^\d{2}-\d{2}-\d{4}/)) {
+      const k = clean.substring(0, colonIdx + 1);
+      const v = clean.substring(colonIdx + 1).trim();
+      ctx.textAlign = 'left';
+      ctx.fillText(k, 26, yPos);
+      ctx.textAlign = 'right';
+      ctx.fillText(v, w - 24, yPos);
+    } else {
+      ctx.textAlign = 'center';
+      ctx.fillText(clean, w / 2, yPos);
+    }
+    yPos += lineH;
+  });
+
+  // Pie de ticket
+  ctx.fillStyle = '#64748b';
+  ctx.font = '13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('********************************', w / 2, h - zigH - 34);
+  ctx.fillText('Gracias por su reserva!', w / 2, h - zigH - 14);
+
+  const imgEl = document.getElementById('ticket-img-preview');
+  if (imgEl) imgEl.src = canvas.toDataURL('image/png');
+  const btnCp = document.getElementById('btn-copiar-img-ticket');
+  if (btnCp) btnCp.textContent = 'Copiar Imagen';
+  document.getElementById('modal-ticket-imagen').classList.add('open');
+}
+
+function copiarTicketImagen(btnEl) {
+  if (!lastTicketCanvas) return;
+  lastTicketCanvas.toBlob((blob) => {
+    if (blob && navigator.clipboard && window.ClipboardItem) {
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+        .then(() => { if (btnEl) btnEl.textContent = 'Imagen Copiada'; })
+        .catch(() => { bajarTicketImagen(); if (btnEl) btnEl.textContent = 'Descargada (PNG)'; });
+    } else {
+      bajarTicketImagen();
+      if (btnEl) btnEl.textContent = 'Descargada (PNG)';
+    }
+  }, 'image/png');
+}
+
+function bajarTicketImagen() {
+  if (!lastTicketCanvas) return;
+  const link = document.createElement('a');
+  link.download = 'Ticket_RentaRent_' + Date.now().toString().slice(-6) + '.png';
+  link.href = lastTicketCanvas.toDataURL('image/png');
+  link.click();
+}
+window.RentaRent.reservas = { renderReservas, abrirModalReserva, guardarReserva, editarReserva, eliminarReserva, setTipoPagoReserva, actualizarRestaPagar, generarTicketDesdeForm, generarTicketReserva, copiarTicket, abrirArchivoTickets, renderArchivoTickets };
+
+
+
+
+
+
+
+
+
+

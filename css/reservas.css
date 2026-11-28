@@ -97,12 +97,6 @@
       filter: grayscale(60%);
     }
 
-    .cal-day.past {
-      opacity: 0.32;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-
     .cal-day.highlighted-booking {
       box-shadow: 0 0 0 2px #FFC64F !important;
       transform: scale(1.06);
@@ -153,3 +147,37 @@
       border-color: var(--text-muted);
     }
 
+
+.cal-day.past { opacity: 0.32; pointer-events: none; cursor: not-allowed; }
+
+
+/* Calendario compacto en ficha de propiedad y nueva reserva */
+#modal-prop-detalle .cal-wrap,
+#modal-reserva .cal-wrap {
+  max-width: 290px;
+  margin: 0 auto 0.65rem auto;
+  padding: 0.6rem !important;
+}
+#modal-prop-detalle .cal-grid,
+#modal-reserva .cal-grid {
+  gap: 3px;
+  margin-bottom: 0.45rem;
+}
+#modal-prop-detalle .cal-day,
+#modal-reserva .cal-day {
+  aspect-ratio: auto;
+  height: 28px;
+  font-size: 0.72rem;
+  border-radius: 6px;
+}
+#modal-prop-detalle .modal-box {
+  display: block !important;
+  max-height: 92vh !important;
+  overflow-y: auto !important;
+}
+#prop-det-reservas {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  flex: none !important;
+}

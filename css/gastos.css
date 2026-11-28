@@ -1,0 +1,10 @@
+﻿/* ---- MODULO GASTOS ---- */
+.gasto-cat-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.16);
+  color: var(--accent-warning);
+}

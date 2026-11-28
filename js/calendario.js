@@ -45,7 +45,7 @@ function renderCalendarioMensual(grid, label, fechaRef, renderDiaFn) {
 
     function cambiarMesResCal(delta) {
       resCalFecha.setMonth(resCalFecha.getMonth() + delta);
-      renderResCalendario();
+      renderResCalendario(); if (typeof recalcularCostoReservaPorNoches === 'function') recalcularCostoReservaPorNoches(true);
     }
 
     function seleccionarFechaRes(dateStr) {
@@ -70,7 +70,7 @@ function renderCalendarioMensual(grid, label, fechaRef, renderDiaFn) {
       }
       document.getElementById('res-entrada-lbl').textContent = formatFechaAR(inpIn.value);
       document.getElementById('res-salida-lbl').textContent = formatFechaAR(inpOut.value);
-      renderResCalendario();
+      renderResCalendario(); if (typeof recalcularCostoReservaPorNoches === 'function') recalcularCostoReservaPorNoches(true);
     }
 
     function renderResCalendario() {
@@ -130,9 +130,7 @@ function renderCalendarioMensual(grid, label, fechaRef, renderDiaFn) {
 
         if (existingBook) cell.title = `Ocupado: ${existingBook.huesped} (${existingBook.canal})`;
         cell.textContent = d;
-        if (dateStr >= hoyStr) {
-          cell.onclick = () => seleccionarFechaRes(dateStr);
-        }
+        if (dateStr >= hoyStr) cell.onclick = () => seleccionarFechaRes(dateStr);
         grid.appendChild(cell);
       }
     }
@@ -201,3 +199,6 @@ function renderCalendarioMensual(grid, label, fechaRef, renderDiaFn) {
 
 
 window.RentaRent.calendario = { renderCalendarioMensual, renderCalendarioPropiedad, renderResCalendario, cambiarMesCalendario, cambiarMesResCal, seleccionarFechaRes, destacarReservaEnCalendario };
+
+
+

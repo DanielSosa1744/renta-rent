@@ -106,32 +106,24 @@
         }).join('');
       }
     }
+function exportarCSV() {
+  let csv = '\uFEFFTipo;ID;Propiedad;FechaEntrada/Fecha;FechaSalida/Cat;Canal/Detalle;Importe\r\n';
+  bookings.forEach(b => {
+    const p = properties.find(x => x.id === b.propertyId);
+    csv += 'Reserva;' + b.id + ';"' + (p ? p.nombre : '') + '";' + formatFechaAR(b.fechaEntrada) + ';' + formatFechaAR(b.fechaSalida) + ';' + b.canal + ';' + b.importeCobrado + '\r\n';
+  });
+  expenses.forEach(e => {
+    const p = properties.find(x => x.id === e.propertyId);
+    csv += 'Gasto;' + e.id + ';"' + (p ? p.nombre : '') + '";' + formatFechaAR(e.fecha) + ';"' + e.categoria + '";"' + (e.descripcion || '') + '";' + e.importe + '\r\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Reporte_RentaRent_' + new Date().toISOString().substring(0, 10) + '.csv';
+  a.click();
+}
 
-    // ==========================================
-    // ACCIONES CRUD (RESERVAS)
-    // ==========================================
-
-    function exportarCSV() {
-      let csv = 'Tipo,ID,Propiedad,FechaEntrada/Fecha,FechaSalida/Cat,Canal/Detalle,Importe\n';
-      bookings.forEach(b => {
-        const p = properties.find(x => x.id === b.propertyId);
-        csv += `Reserva,${b.id},"${p ? p.nombre : ''}",${b.fechaEntrada},${b.fechaSalida},${b.canal},${b.importeCobrado}\n`;
-      });
-      expenses.forEach(e => {
-        const p = properties.find(x => x.id === e.propertyId);
-        csv += `Gasto,${e.id},"${p ? p.nombre : ''}",${formatFechaAR(e.fecha)},"${e.categoria}","${e.descripcion || ''}",${e.importe}\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Reporte_RentaRent_${new Date().toISOString().substring(0, 10)}.csv`;
-      a.click();
-    }
-
-    function exportarPDF() { window.print(); }
-
-    // ---- MODO CLARO / OSCURO ----
+function exportarPDF() { window.print(); }
 
 window.RentaRent.reportes = { renderGraficoDashboard, renderReporte, exportarCSV, exportarPDF };

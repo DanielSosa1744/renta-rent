@@ -1,6 +1,8 @@
 ﻿/* ---- HEADER ---- */
     .app-header {
-      background: rgba(10, 25, 49, 0.94);
+      background: rgba(15, 23, 42, 0.85);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -9,9 +11,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      contain: layout style paint;
     }
 
     .brand {
@@ -69,46 +68,45 @@
       right: 14px;
       max-width: 600px;
       margin: 0 auto;
-      background: rgba(10, 25, 49, 0.94);
+      background: rgba(10, 25, 49, 0.82);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
       border: 1px solid var(--border-color);
       border-radius: 24px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
       display: flex;
       justify-content: space-around;
       align-items: center;
       padding: 0.45rem 0.5rem;
       z-index: 90;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      contain: layout style paint;
     }
 
 /* ---- DOCK CENTRADO CON BOTON + ---- */
     .nav-add-btn {
-      width: 48px;
-      height: 48px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: linear-gradient(135deg, #047857, #065f46);
       color: #ffffff;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      font-size: 2rem;
+      border: 3px solid #0A1931;
+      font-size: 2.5rem;
       font-weight: 900;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      margin: 0 4px;
-      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.45);
-      transition: transform 0.2s ease;
+      margin-top: -28px;
+      box-shadow: 0 10px 26px rgba(4, 120, 87, 0.55), 0 0 0 4px rgba(4, 120, 87, 0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       flex-shrink: 0;
     }
 
     body.light-mode .nav-add-btn {
       background: linear-gradient(135deg, #047857, #065f46);
       color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.45);
-      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.35);
+      border-color: #f7f3e8;
+      box-shadow: 0 10px 26px rgba(4, 120, 87, 0.45), 0 0 0 4px rgba(4, 120, 87, 0.16);
     }
 
     .nav-add-btn:hover {
@@ -120,58 +118,6 @@
       transform: scale(0.95);
     }
 
-@media (max-width: 480px) {
-      .app-header {
-        padding: max(0.65rem, env(safe-area-inset-top, 0px)) 0.85rem 0.65rem 0.85rem;
-        gap: 0.4rem;
-      }
-      .brand-title {
-        font-size: 0.98rem;
-      }
-      .container {
-        padding: 0.75rem;
-      }
-      .bottom-nav {
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-        padding: 0.35rem 0.3rem;
-        border-radius: 20px;
-      }
-      .nav-item {
-        font-size: 0.62rem;
-        padding: 0.3rem 0.2rem;
-      }
-      .nav-add-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 1.8rem;
-      }
-      .card-title {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-      .modal-box {
-        padding: 1rem;
-        max-width: calc(100vw - 20px);
-        max-height: 92vh;
-        overflow-y: auto;
-      }
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-      .metrics-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.6rem;
-      }
-      .giftcards-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.65rem;
-      }
-      .giftcard {
-        padding: 0.85rem;
-        min-height: 120px;
-      }
-    }
+
+body.light-mode .brand-title { background: none; -webkit-text-fill-color: #20373B; color: #20373B; }
 
