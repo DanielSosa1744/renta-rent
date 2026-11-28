@@ -684,6 +684,23 @@
             <option value="Otro">Otro</option>
           </select>
         </div>
+        <div class="form-group">
+          <label>Modalidad de Alquiler</label>
+          <select class="form-control" id="prop-modalidad" onchange="toggleCamposLargoPlazo()">
+            <option value="temporario">Temporario (por noche / estadía)</option>
+            <option value="largo_plazo">Largo Plazo (2 o más años)</option>
+          </select>
+        </div>
+        <div class="form-row" id="prop-largo-plazo-row" style="display:none;">
+          <div class="form-group">
+            <label>Duración (años)</label>
+            <input type="number" min="2" class="form-control" id="prop-anios-contrato" value="2" />
+          </div>
+          <div class="form-group">
+            <label>Alquiler Mensual ($)</label>
+            <input type="number" min="0" step="1000" class="form-control" id="prop-valor-mensual" placeholder="0" />
+          </div>
+        </div>
         <button type="submit" class="btn btn-primary btn-full" style="margin-top: 0.5rem;">Guardar Propiedad</button>
       </form>
     </div>
