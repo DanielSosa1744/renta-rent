@@ -409,7 +409,7 @@ function abrirHistorialReservas(propIdFiltro = null) {
     listEl.innerHTML = '<div style="font-size:0.85rem;font-weight:700;color:var(--accent-primary);margin-bottom:0.65rem;">Total histórico (' + pasadas.length + ' reservas): ' + fmtMonto(totalHist) + '</div>' + pasadas.map(b => {
       const p = properties.find(x => x.id === b.propertyId);
       const noches = calcularNoches(b.fechaEntrada, b.fechaSalida);
-      return '<div class="list-card" style="padding:0.8rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;font-size:0.9rem;color:var(--text-main);">' + (p ? p.nombre : 'Propiedad') + '</div><div style="font-size:0.78rem;color:var(--text-muted);">' + (b.huesped || 'Reserva sin nombre') + ' • ' + b.canal + '</div><div style="font-size:0.74rem;color:var(--text-muted);">' + formatFechaAR(b.fechaEntrada) + ' a ' + formatFechaAR(b.fechaSalida) + ' (' + noches + 'n)</div></div><div style="font-weight:800;color:var(--accent-primary);font-size:0.95rem;">' + fmtMonto(b.importeCobrado || 0) + '</div></div></div>';
+      return '<div class="list-card" style="padding:0.8rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;font-size:0.9rem;color:var(--text-main);">' + (p ? p.nombre : 'Propiedad') + '</div><div style="font-size:0.78rem;color:var(--text-muted);">' + (b.huesped || 'Reserva sin nombre') + ' • ' + b.canal + '</div><div style="font-size:0.74rem;color:var(--text-muted);">' + formatFechaAR(b.fechaEntrada) + ' a ' + formatFechaAR(b.fechaSalida) + ' (' + noches + 'n)</div></div><div style="display:flex;align-items:center;gap:0.45rem;"><div style="font-weight:800;color:var(--accent-primary);font-size:0.95rem;">' + fmtMonto(b.importeCobrado || 0) + '</div><button type="button" class="btn btn-danger btn-sm" style="padding:0.2rem 0.45rem;font-size:0.72rem;" onclick="cerrarModal(\'modal-historial-reservas\');eliminarReserva(\'' + b.id + '\')">X</button></div></div></div>';
     }).join('');
   }
   document.getElementById('modal-historial-reservas').classList.add('open');
@@ -579,6 +579,7 @@ function bajarTicketImagen() {
   link.click();
 }
 window.RentaRent.reservas = { renderReservas, abrirModalReserva, guardarReserva, editarReserva, eliminarReserva, setTipoPagoReserva, actualizarRestaPagar, generarTicketDesdeForm, generarTicketReserva, copiarTicket, abrirArchivoTickets, renderArchivoTickets };
+
 
 
 
