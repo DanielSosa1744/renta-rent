@@ -58,6 +58,7 @@
         const r = calcularResumenPropiedad(propId, rango.desde, rango.hasta, rango.dias);
         informeEl.innerHTML = `
           <div class="profit-breakdown" style="margin-bottom:0.75rem;">
+            ${p.modalidad === 'largo_plazo' ? `<div class="profit-row" style="color:var(--accent-primary);"><span>Contrato Largo Plazo (${p.aniosContrato || 2} años):</span><strong>${fmtMonto(p.valorMensual || 0)}/mes • Potencial: ${fmtMonto(p.ingresoPotencial || ((p.valorMensual || 0) * 12 * (p.aniosContrato || 2)))}</strong></div>` : ''}
             <div class="profit-row"><span>Reservas / Noches / Prom.:</span><strong>${r.cantidadReservas} res • ${r.nochesOcupadas}n (${r.promedioEstadia}n/res)</strong></div>
             <div class="profit-row"><span>Ocupación / Rentabilidad:</span><strong>${r.ocupacionPct}% ocup. • ${r.rentabilidadPct}% rent.</strong></div>
             <div class="profit-row"><span>Ingresos Brutos / Comis.:</span><span>${fmtMonto(r.ingresosBrutos)} / -${fmtMonto(r.comisiones)}</span></div>
@@ -165,14 +166,69 @@
 
 function toggleCamposLargoPlazo() {
   const mod = document.getElementById('prop-modalidad')?.value || 'temporario';
-  const row = document.getElementById('prop-largo-plazo-row');
-  if (row) row.style.display = (mod === 'largo_plazo') ? 'grid' : 'none';
+  const box = document.getElementById('prop-largo-plazo-fields');
+  if (box) box.style.display = (mod === 'largo_plazo') ? 'block' : 'none';
+  if (mod === 'largo_plazo') {
+    const fIni = document.getElementById('prop-fecha-inicio');
+    const fFin = document.getElementById('prop-fecha-fin');
+    const recalcFin = fIni && fIni.value && (!fFin || !fFin.value);
+    recalcularIngresoPotencialLargoPlazo(recalcFin);
+  }
 }
+
+function calcularMesesContratoPropiedad() {
+  const anios = Math.max(2, parseInt(document.getElementById('prop-anios-contrato')?.value, 10) || 2);
+  const fIni = document.getElementById('prop-fecha-inicio')?.value;
+  const fFin = document.getElementById('prop-fecha-fin')?.value;
+  if (fIni && fFin && fFin > fIni) {
+    const [y1, m1, d1] = fIni.split('-').map(Number);
+    const [y2, m2, d2] = fFin.split('-').map(Number);
+    const meses = (y2 - y1) * 12 + (m2 - m1) + (d2 >= d1 ? 0 : -1);
+    if (meses >= 1) return meses;
+  }
+  return anios * 12;
+}
+
+function recalcularIngresoPotencialLargoPlazo(recalcFin = false) {
+  const anios = Math.max(2, parseInt(document.getElementById('prop-anios-contrato')?.value, 10) || 2);
+  const mensual = Math.max(0, parseFloat(document.getElementById('prop-valor-mensual')?.value) || 0);
+  const fIniEl = document.getElementById('prop-fecha-inicio');
+  const fFinEl = document.getElementById('prop-fecha-fin');
+
+  if (recalcFin && fIniEl && fIniEl.value && fFinEl) {
+    const [y, m, d] = fIniEl.value.split('-').map(Number);
+    const finDate = new Date(y + anios, m - 1, d);
+    const yyyy = finDate.getFullYear();
+    const mm = String(finDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(finDate.getDate()).padStart(2, '0');
+    fFinEl.value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  const meses = calcularMesesContratoPropiedad();
+  const ingresoAnual = mensual * 12;
+  const ingresoTotal = mensual * meses;
+
+  const mesesEl = document.getElementById('prop-pot-meses');
+  const anualEl = document.getElementById('prop-pot-anual');
+  const totalEl = document.getElementById('prop-pot-total');
+  if (mesesEl) mesesEl.textContent = `${meses} meses (${(meses / 12).toFixed(meses % 12 === 0 ? 0 : 1)} años)`;
+  if (anualEl) anualEl.textContent = fmtMonto(ingresoAnual);
+  if (totalEl) totalEl.textContent = fmtMonto(ingresoTotal);
+}
+
 function abrirModalPropiedad() {
   document.getElementById('prop-id').value = '';
   document.getElementById('prop-nombre').value = '';
   document.getElementById('prop-direccion').value = '';
-  document.getElementById('prop-tipo').value = 'Apartamento'; const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = 'temporario'; const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = 2; const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = ''; toggleCamposLargoPlazo();
+  document.getElementById('prop-tipo').value = 'Apartamento';
+  const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = 'temporario';
+  const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = 2;
+  const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = '';
+  const fIni = document.getElementById('prop-fecha-inicio'); if (fIni) fIni.value = new Date().toISOString().substring(0, 10);
+  const fFin = document.getElementById('prop-fecha-fin'); if (fFin) fFin.value = '';
+  const ajSel = document.getElementById('prop-ajuste-frecuencia'); if (ajSel) ajSel.value = 'Semestral';
+  const depInp = document.getElementById('prop-deposito'); if (depInp) depInp.value = '';
+  toggleCamposLargoPlazo();
   document.getElementById('prop-modal-title').textContent = 'Nuevo Alojamiento';
   document.getElementById('modal-propiedad').classList.add('open');
 }
@@ -182,10 +238,37 @@ function guardarPropiedad(e) {
   const id = document.getElementById('prop-id').value || 'prop_' + Date.now();
   const nombre = document.getElementById('prop-nombre').value.trim();
   const direccion = document.getElementById('prop-direccion').value.trim();
-  const tipo = document.getElementById('prop-tipo').value; const modalidad = document.getElementById('prop-modalidad')?.value || 'temporario'; const aniosContrato = Math.max(2, parseInt(document.getElementById('prop-anios-contrato')?.value, 10) || 2); const valorMensual = Math.max(0, parseFloat(document.getElementById('prop-valor-mensual')?.value) || 0);
+  const tipo = document.getElementById('prop-tipo').value;
+  const modalidad = document.getElementById('prop-modalidad')?.value || 'temporario';
+  const aniosContrato = Math.max(2, parseInt(document.getElementById('prop-anios-contrato')?.value, 10) || 2);
+  const valorMensual = Math.max(0, parseFloat(document.getElementById('prop-valor-mensual')?.value) || 0);
+  const fechaInicioContrato = document.getElementById('prop-fecha-inicio')?.value || '';
+  const fechaFinContrato = document.getElementById('prop-fecha-fin')?.value || '';
+  const ajusteFrecuencia = document.getElementById('prop-ajuste-frecuencia')?.value || 'Semestral';
+  const depositoGarantia = Math.max(0, parseFloat(document.getElementById('prop-deposito')?.value) || 0);
+  const meses = calcularMesesContratoPropiedad();
+  const ingresoPotencial = modalidad === 'largo_plazo' ? valorMensual * meses : 0;
+
   const idx = properties.findIndex(p => p.id === id);
   const existing = idx !== -1 ? properties[idx] : {};
-  const data = { activa: true, tarifaBase: 0, notas: '', ...existing, id, nombre, direccion, tipo, modalidad, aniosContrato, valorMensual };
+  const data = {
+    activa: true,
+    tarifaBase: 0,
+    notas: '',
+    ...existing,
+    id,
+    nombre,
+    direccion,
+    tipo,
+    modalidad,
+    aniosContrato,
+    valorMensual,
+    fechaInicioContrato,
+    fechaFinContrato,
+    ajusteFrecuencia,
+    depositoGarantia,
+    ingresoPotencial
+  };
 
   if (idx !== -1) properties[idx] = data;
   else properties.push(data);
@@ -203,7 +286,16 @@ function editarPropiedad(id) {
   document.getElementById('prop-id').value = p.id;
   document.getElementById('prop-nombre').value = p.nombre;
   document.getElementById('prop-direccion').value = p.direccion || '';
-  document.getElementById('prop-tipo').value = p.tipo || 'Apartamento'; const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = p.modalidad || 'temporario'; const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = p.aniosContrato || 2; const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = p.valorMensual || ''; toggleCamposLargoPlazo();
+  document.getElementById('prop-tipo').value = p.tipo || 'Apartamento';
+  const mSel = document.getElementById('prop-modalidad'); if (mSel) mSel.value = p.modalidad || 'temporario';
+  const aInp = document.getElementById('prop-anios-contrato'); if (aInp) aInp.value = p.aniosContrato || 2;
+  const vInp = document.getElementById('prop-valor-mensual'); if (vInp) vInp.value = p.valorMensual || '';
+  const fIni = document.getElementById('prop-fecha-inicio'); if (fIni) fIni.value = p.fechaInicioContrato || new Date().toISOString().substring(0, 10);
+  const fFin = document.getElementById('prop-fecha-fin'); if (fFin) fFin.value = p.fechaFinContrato || '';
+  const ajSel = document.getElementById('prop-ajuste-frecuencia'); if (ajSel) ajSel.value = p.ajusteFrecuencia || 'Semestral';
+  const depInp = document.getElementById('prop-deposito'); if (depInp) depInp.value = p.depositoGarantia || '';
+  toggleCamposLargoPlazo();
+  recalcularIngresoPotencialLargoPlazo(!p.fechaFinContrato);
   document.getElementById('prop-modal-title').textContent = 'Editar Alojamiento';
   document.getElementById('modal-propiedad').classList.add('open');
 }

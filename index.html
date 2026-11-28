@@ -691,14 +691,47 @@
             <option value="largo_plazo">Largo Plazo (2 o más años)</option>
           </select>
         </div>
-        <div class="form-row" id="prop-largo-plazo-row" style="display:none;">
-          <div class="form-group">
-            <label>Duración (años)</label>
-            <input type="number" min="2" class="form-control" id="prop-anios-contrato" value="2" />
+        <div id="prop-largo-plazo-fields" style="display:none; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:12px; padding:0.75rem; margin-bottom:0.75rem;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Duración (años)</label>
+              <input type="number" min="2" class="form-control" id="prop-anios-contrato" value="2" oninput="recalcularIngresoPotencialLargoPlazo(true)" />
+            </div>
+            <div class="form-group">
+              <label>Alquiler Mensual ($)</label>
+              <input type="number" min="0" step="1000" class="form-control" id="prop-valor-mensual" placeholder="0" oninput="recalcularIngresoPotencialLargoPlazo(false)" />
+            </div>
           </div>
-          <div class="form-group">
-            <label>Alquiler Mensual ($)</label>
-            <input type="number" min="0" step="1000" class="form-control" id="prop-valor-mensual" placeholder="0" />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Inicio de Contrato</label>
+              <input type="date" class="form-control" id="prop-fecha-inicio" onchange="recalcularIngresoPotencialLargoPlazo(true)" />
+            </div>
+            <div class="form-group">
+              <label>Fin de Contrato</label>
+              <input type="date" class="form-control" id="prop-fecha-fin" onchange="recalcularIngresoPotencialLargoPlazo(false)" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Actualización / Ajuste</label>
+              <select class="form-control" id="prop-ajuste-frecuencia">
+                <option value="Sin ajuste">Sin ajuste</option>
+                <option value="Trimestral">Trimestral</option>
+                <option value="Cuatrimestral">Cuatrimestral</option>
+                <option value="Semestral" selected>Semestral</option>
+                <option value="Anual">Anual</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Depósito Garantía ($)</label>
+              <input type="number" min="0" step="1000" class="form-control" id="prop-deposito" placeholder="0" />
+            </div>
+          </div>
+          <div class="profit-breakdown" id="prop-ingreso-potencial-box" style="margin-top:0.35rem; margin-bottom:0; padding:0.6rem 0.75rem;">
+            <div class="profit-row"><span>Período total:</span> <strong id="prop-pot-meses">24 meses</strong></div>
+            <div class="profit-row"><span>Ingreso anual estimado:</span> <strong id="prop-pot-anual">$0</strong></div>
+            <div class="profit-row net"><span>Ingreso Potencial Total:</span> <strong id="prop-pot-total">$0</strong></div>
           </div>
         </div>
         <button type="submit" class="btn btn-primary btn-full" style="margin-top: 0.5rem;">Guardar Propiedad</button>
