@@ -87,41 +87,5 @@
       renderReservas();
     }, 'Eliminar Gasto'); }
 
-    // ==========================================
-    // ACCIONES CRUD (PROPIEDADES)
-    // ==========================================
-    function abrirModalPropiedad() {
-      // FREEMIUM CHECK STRUCT
-      if (properties.length >= 1) {
-        // En plan gratis se permite 1 propiedad para validación MVP
-        // mostramos banner de beneficio Premium
-      }
-      document.getElementById('prop-id').value = '';
-      document.getElementById('prop-nombre').value = '';
-      document.getElementById('prop-direccion').value = '';
-      document.getElementById('prop-modal-title').textContent = 'Nueva Propiedad';
-      document.getElementById('modal-propiedad').classList.add('open');
-    }
-
-    function guardarPropiedad(e) {
-      e.preventDefault();
-      const id = document.getElementById('prop-id').value || 'prop_' + Date.now();
-      const nombre = document.getElementById('prop-nombre').value.trim();
-      const direccion = document.getElementById('prop-direccion').value.trim();
-      const tipo = document.getElementById('prop-tipo').value;
-
-      const idx = properties.findIndex(p => p.id === id);
-      const data = { id, nombre, direccion, tipo };
-
-      if (idx !== -1) properties[idx] = data;
-      else properties.push(data);
-
-      guardarDatos();
-      cerrarModal('modal-propiedad');
-      poblarSelectsPropiedades();
-      renderDashboard();
-      renderPropiedades();
-    }
-
 window.RentaRent.gastos = { renderGastos, abrirModalGasto, asociarGastoReserva, guardarGasto, eliminarGasto };
 
