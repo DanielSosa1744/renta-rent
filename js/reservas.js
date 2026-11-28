@@ -168,7 +168,7 @@ function guardarReserva(e) {
       cerrarModal('modal-reserva');
       poblarSelectsPropiedades();
       renderDashboard();
-      renderReservas();
+      renderReservas(); if (typeof renderFinanzasModulo === 'function') renderFinanzasModulo();
     }
 
     const TICKETS_KEY = 'rentarent_tickets_v1';
@@ -280,7 +280,7 @@ function copiarTicketArchivo(id, btnEl) {
         guardarDatos();
         poblarSelectsPropiedades();
         renderDashboard();
-        renderReservas();
+        renderReservas(); if (typeof renderFinanzasModulo === 'function') renderFinanzasModulo();
       }
       cerrarModal('modal-reserva');
 
@@ -387,7 +387,7 @@ function copiarTicketArchivo(id, btnEl) {
       guardarDatos();
       poblarSelectsPropiedades();
       renderDashboard();
-      renderReservas();
+      renderReservas(); if (typeof renderFinanzasModulo === 'function') renderFinanzasModulo();
     }
 
     // ==========================================
@@ -579,6 +579,7 @@ function bajarTicketImagen() {
   link.click();
 }
 window.RentaRent.reservas = { renderReservas, abrirModalReserva, guardarReserva, editarReserva, eliminarReserva, setTipoPagoReserva, actualizarRestaPagar, generarTicketDesdeForm, generarTicketReserva, copiarTicket, abrirArchivoTickets, renderArchivoTickets };
+
 
 
 

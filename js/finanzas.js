@@ -215,7 +215,7 @@ function renderGrillaExcel() {
       <td style="color:#f87171;">-${fmtMonto(r.gasto)}</td>
       <td style="color:var(--accent-primary);font-weight:800;">${fmtMonto(r.resultado)}</td>
       <td>${r.estado}</td>
-      <td><button type="button" class="btn btn-secondary btn-sm" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="generarTicketReserva('${r.id}')">Ver</button></td>
+      <td style="display:flex;gap:0.3rem;"><button type="button" class="btn btn-secondary btn-sm" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="generarTicketReserva('${r.id}')">Ver</button><button type="button" class="btn btn-danger btn-sm" style="padding:0.2rem 0.45rem;font-size:0.72rem;" onclick="eliminarReserva('${r.id}')">X</button></td>
     </tr>
   `).join('');
 }

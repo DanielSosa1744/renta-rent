@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'rentarent-v2.01';
+﻿const CACHE_NAME = 'rentarent-v2.02';
 const ASSETS = [
   '/',
   '/index.html',
@@ -42,4 +42,5 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
+
 
