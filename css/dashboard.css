@@ -172,4 +172,50 @@
       font-size: 0.92rem;
       font-weight: 800;
     }
+    /* ---- GIFTCARD LARGO PLAZO (DISEÑO DIFERENCIADO) ---- */
+    .giftcard.giftcard-lp {
+      background: linear-gradient(145deg, #1b2234 0%, #101726 55%, #1c2c38 100%) !important;
+      border: 1.5px solid rgba(255, 198, 79, 0.55);
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 215, 120, 0.18);
+      min-height: 156px;
+    }
 
+    .giftcard.giftcard-lp::after {
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, rgba(255, 198, 79, 0.16) 0%, rgba(255, 198, 79, 0) 70%);
+    }
+
+    .giftcard-lp-badge {
+      background: rgba(255, 198, 79, 0.18);
+      color: #ffd470;
+      border: 1px solid rgba(255, 198, 79, 0.4);
+    }
+
+    .giftcard-lp-tenant {
+      margin-top: 0.45rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.72rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .giftcard-lp-btn {
+      background: rgba(255, 198, 79, 0.2);
+      color: #ffd470;
+      border: 1px solid rgba(255, 198, 79, 0.45);
+      border-radius: 8px;
+      padding: 0.18rem 0.45rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .giftcard-lp-btn:hover {
+      background: rgba(255, 198, 79, 0.32);
+    }

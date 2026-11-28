@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'rentarent-v2.03';
+﻿const CACHE_NAME = 'rentarent-v2.04';
 const ASSETS = [
   '/',
   '/index.html',
